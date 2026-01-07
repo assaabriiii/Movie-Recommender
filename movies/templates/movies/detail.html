@@ -1,0 +1,53 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+<section class="panel detail-panel">
+  <div class="detail-header">
+    <div>
+      <p class="detail-kicker">Movie details</p>
+      <h1>{{ movie.title }}</h1>
+      <p class="muted">{{ movie.genres|default:"Genre blend" }}</p>
+    </div>
+    {% if stats %}
+      <div class="stat-card">
+        <p>MovieLens avg</p>
+        <h2>{{ stats.avg_rating|floatformat:1 }}</h2>
+        <span>{{ stats.rating_count }} ratings</span>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="detail-grid">
+    <div class="panel inset">
+      <h2>Your rating</h2>
+      <p class="muted">Rate and comment to refresh your recommendations.</p>
+      <form class="rating-form" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          {{ form.rating.label_tag }}
+          {{ form.rating }}
+          {% if form.rating.errors %}
+            <div class="form-error">{{ form.rating.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="form-row">
+          {{ form.comment.label_tag }}
+          {{ form.comment }}
+        </div>
+        <button type="submit">Save rating</button>
+      </form>
+    </div>
+
+    <div class="panel inset">
+      <h2>Current note</h2>
+      {% if rating_obj %}
+        <p class="rating-pill">{{ rating_obj.rating }}</p>
+        <p>{{ rating_obj.comment|default:"No comment yet." }}</p>
+        <p class="muted">Updated {{ rating_obj.updated_at|date:"M d, Y" }}</p>
+      {% else %}
+        <p class="muted">No rating yet. Add one to personalize your feed.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

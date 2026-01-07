@@ -1,0 +1,26 @@
+{% extends "movies/base_static.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Watched movies</h2>
+      <p>Snapshot of your rated titles.</p>
+    </div>
+  </div>
+
+  <div class="rating-list">
+    {% for rating in ratings %}
+      <div class="rating-row">
+        <div>
+          <h3>{{ rating.movie.title }}</h3>
+          <p>{{ rating.comment|default:"No comment yet." }}</p>
+        </div>
+        <span class="rating-pill">{{ rating.rating }}</span>
+      </div>
+    {% empty %}
+      <p class="muted">No watched movies yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

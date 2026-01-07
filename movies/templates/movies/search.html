@@ -1,0 +1,38 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Search the full catalog</h2>
+      <p>Type a title, rate it, and the system adapts instantly.</p>
+    </div>
+  </div>
+  <form class="search-form" method="get">
+    <input type="search" name="q" placeholder="Search by title" value="{{ query }}" aria-label="Search by title">
+    <button type="submit">Search</button>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>{% if query %}Results for "{{ query }}"{% else %}All movies{% endif %}</h2>
+      <p>{{ movies|length }} showing</p>
+    </div>
+  </div>
+  <div class="card-grid">
+    {% for movie in movies %}
+      <a class="movie-card" href="{% url 'movie_detail' movie.pk %}">
+        <div class="movie-card-body">
+          <h3>{{ movie.title }}</h3>
+          <p>{{ movie.genres|default:"Genre blend" }}</p>
+        </div>
+        <span class="movie-card-cta">Rate it</span>
+      </a>
+    {% empty %}
+      <p class="muted">No matches. Try a different title.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

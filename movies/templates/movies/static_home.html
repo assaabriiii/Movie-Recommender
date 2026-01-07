@@ -1,0 +1,71 @@
+{% extends "movies/base_static.html" %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="hero-kicker">Snapshot</p>
+    <h1>Recommended right now.</h1>
+    <p class="hero-subtitle">This static page captures your current recommendations and ratings.</p>
+  </div>
+  <div class="hero-card">
+    <p class="hero-card-title">Your activity</p>
+    <p class="hero-card-number">{{ user_ratings|length }}</p>
+    <p class="hero-card-label">movies rated</p>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>{% if recommendations %}Recommended for you{% else %}Popular picks{% endif %}</h2>
+      <p>{% if recommendations %}Based on your ratings{% else %}Start by rating a few movies in the app{% endif %}</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    {% if recommendations %}
+      {% for movie in recommendations %}
+        <div class="movie-card">
+          <div class="movie-card-body">
+            <h3>{{ movie.title }}</h3>
+            <p>{{ movie.genres|default:"Genre blend" }}</p>
+          </div>
+          <span class="movie-card-cta">{{ movie.user_rating.rating|default:"Not rated" }}</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      {% for movie in popular_movies %}
+        <div class="movie-card">
+          <div class="movie-card-body">
+            <h3>{{ movie.title }}</h3>
+            <p>{{ movie.genres|default:"Genre blend" }}</p>
+          </div>
+          <span class="movie-card-cta">{{ movie.user_rating.rating|default:"Not rated" }}</span>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Your latest ratings</h2>
+      <p>Recent feedback that guides the model.</p>
+    </div>
+  </div>
+  <div class="rating-list">
+    {% for rating in user_ratings|slice:":8" %}
+      <div class="rating-row">
+        <div>
+          <h3>{{ rating.movie.title }}</h3>
+          <p>{{ rating.comment|default:"No comment yet." }}</p>
+        </div>
+        <span class="rating-pill">{{ rating.rating }}</span>
+      </div>
+    {% empty %}
+      <p class="muted">No ratings yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

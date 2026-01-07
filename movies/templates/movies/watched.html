@@ -1,0 +1,30 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Watched movies</h2>
+      <p>Your rated list with quick context.</p>
+    </div>
+    <a class="button ghost" href="{% url 'movie_search' %}">Rate another</a>
+  </div>
+
+  <div class="rating-list">
+    {% for rating in ratings %}
+      <div class="rating-row">
+        <div>
+          <h3>{{ rating.movie.title }}</h3>
+          <p>{{ rating.comment|default:"No comment yet." }}</p>
+        </div>
+        <div class="rating-meta">
+          <span class="rating-pill">{{ rating.rating }}</span>
+          <a class="link" href="{% url 'movie_detail' rating.movie.pk %}">Edit</a>
+        </div>
+      </div>
+    {% empty %}
+      <p class="muted">No watched movies yet. Rate a film to get started.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

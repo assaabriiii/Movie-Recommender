@@ -1,0 +1,79 @@
+{% extends "movies/base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="hero-kicker">Welcome back</p>
+    <h1>Movies chosen for your mood, refined by every rating.</h1>
+    <p class="hero-subtitle">Rate any film to sharpen the recommendations and keep a clean list of what you've watched.</p>
+  </div>
+  <div class="hero-card">
+    <p class="hero-card-title">Your activity</p>
+    <p class="hero-card-number">{{ user_ratings|length }}</p>
+    <p class="hero-card-label">movies rated</p>
+  </div>
+</section>
+
+{% if error_message %}
+  <div class="panel warning">{{ error_message }}</div>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>{% if recommendations %}Recommended for you{% else %}Popular picks{% endif %}</h2>
+      <p>{% if recommendations %}Based on your ratings{% else %}Start by rating a few of these{% endif %}</p>
+    </div>
+    <a class="button ghost" href="{% url 'movie_search' %}">Browse all movies</a>
+  </div>
+
+  <div class="card-grid">
+    {% if recommendations %}
+      {% for movie in recommendations %}
+        <a class="movie-card" href="{% url 'movie_detail' movie.pk %}">
+          <div class="movie-card-body">
+            <h3>{{ movie.title }}</h3>
+            <p>{{ movie.genres|default:"Genre blend" }}</p>
+          </div>
+          <span class="movie-card-cta">Rate it</span>
+        </a>
+      {% endfor %}
+    {% else %}
+      {% for movie in popular_movies %}
+        <a class="movie-card" href="{% url 'movie_detail' movie.pk %}">
+          <div class="movie-card-body">
+            <h3>{{ movie.title }}</h3>
+            <p>{{ movie.genres|default:"Genre blend" }}</p>
+          </div>
+          <span class="movie-card-cta">Rate it</span>
+        </a>
+      {% empty %}
+        <p>No recommendations yet. Run the movie import and rate a few films.</p>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Your latest ratings</h2>
+      <p>Recent feedback that guides the model.</p>
+    </div>
+    <a class="button ghost" href="{% url 'watched_movies' %}">View watched list</a>
+  </div>
+  <div class="rating-list">
+    {% for rating in user_ratings|slice:":6" %}
+      <div class="rating-row">
+        <div>
+          <h3>{{ rating.movie.title }}</h3>
+          <p>{{ rating.comment|default:"No comment yet." }}</p>
+        </div>
+        <span class="rating-pill">{{ rating.rating }}</span>
+      </div>
+    {% empty %}
+      <p class="muted">No ratings yet. Pick a movie and leave your score.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
